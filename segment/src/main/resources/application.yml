@@ -1,0 +1,13 @@
+#设置服务的名称，即：服务名
+spring:
+  application:
+    name: segment-service
+
+#往eureka_service端注册的地址，往注册中心注册，端口号是服务端(server)的端口号,这里是 8071端口
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8071/eureka
+
+server:
+  port: 8070
