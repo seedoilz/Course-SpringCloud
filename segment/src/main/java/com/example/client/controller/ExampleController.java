@@ -17,8 +17,8 @@ public class ExampleController {
 
 
     @GetMapping("/query")
-    public List<Nature> query(@RequestParam(value = "question") String question) throws Exception {
-        return exampleService.execSeg(question);
+    public String query(@RequestParam(value = "question") String question) throws Exception {
+        return exampleService.getAnswer(question);
     }
 
     @GetMapping("/")

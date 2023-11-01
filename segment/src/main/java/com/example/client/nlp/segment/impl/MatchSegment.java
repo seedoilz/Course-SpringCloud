@@ -84,6 +84,7 @@ public class MatchSegment implements Segment {
      */
     private List<String> segmentForwardLongest(String text) {
         List<String> wordList = new ArrayList<>();
+        System.out.println(words);
         // 最大长度不允许超过句子长度
         int localMaxLen = text.length() > this.maxLen ? this.maxLen : text.length();
         int start = 0;

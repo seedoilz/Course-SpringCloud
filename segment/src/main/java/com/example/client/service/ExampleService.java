@@ -9,4 +9,6 @@ public interface ExampleService {
     String hello();
 
     List<Nature> execSeg(String question) throws FileNotFoundException;
+
+    String getAnswer(String question) throws FileNotFoundException;
 }
