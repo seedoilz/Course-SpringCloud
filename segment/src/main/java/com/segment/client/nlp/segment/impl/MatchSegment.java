@@ -1,9 +1,9 @@
-package com.example.client.nlp.segment.impl;
+package com.segment.client.nlp.segment.impl;
 
-import com.example.client.nlp.segment.Segment;
-import com.example.client.nlp.segment.nature.Nature;
-import com.example.client.nlp.segment.nature.NatureEnum;
-import com.example.client.utils.FileUtils;
+import com.segment.client.nlp.segment.Segment;
+import com.segment.client.nlp.segment.nature.Nature;
+import com.segment.client.nlp.segment.nature.NatureEnum;
+import com.segment.client.utils.FileUtils;
 
 import java.io.FileNotFoundException;
 import java.util.*;

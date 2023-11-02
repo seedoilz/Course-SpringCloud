@@ -1,8 +1,7 @@
-package com.example.client.utils;
+package com.segment.client.utils;
 
-import com.hankcs.hanlp.seg.common.Term;
-import com.example.client.nlp.segment.nature.Nature;
-import com.example.client.nlp.segment.nature.NatureEnum;
+import com.segment.client.nlp.segment.nature.Nature;
+import com.segment.client.nlp.segment.nature.NatureEnum;
 
 import java.util.ArrayList;
 import java.util.HashMap;

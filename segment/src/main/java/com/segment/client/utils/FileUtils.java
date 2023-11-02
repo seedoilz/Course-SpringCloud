@@ -1,4 +1,4 @@
-package com.example.client.utils;
+package com.segment.client.utils;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.util.ResourceUtils;

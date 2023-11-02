@@ -1,10 +1,9 @@
-package com.example.client.service;
+package com.segment.client.service;
 
-import com.example.client.nlp.segment.Segment;
-import com.example.client.nlp.segment.impl.MatchSegment;
-import com.example.client.nlp.segment.nature.Nature;
-import com.example.client.nlp.segment.nature.NatureEnum;
-import com.example.client.utils.FileUtils;
+import com.segment.client.nlp.segment.Segment;
+import com.segment.client.nlp.segment.impl.MatchSegment;
+import com.segment.client.nlp.segment.nature.Nature;
+import com.segment.client.nlp.segment.nature.NatureEnum;
 import com.google.common.collect.Lists;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Record;
@@ -14,14 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
-public class ExampleImpl implements ExampleService {
+public class SegmentImpl implements SegmentService {
 
     public static String sql = "MATCH (n1:Entity{name:'%s'}) <- [:下属于] - (n2:%s) RETURN n2.name";
 
@@ -45,7 +43,7 @@ public class ExampleImpl implements ExampleService {
     @Override
     public List<Nature> execSeg(String question) throws FileNotFoundException {
 
-        Segment segment = new MatchSegment(ExampleImpl.class.getClassLoader().getResource("vocab").getPath());
+        Segment segment = new MatchSegment(SegmentImpl.class.getClassLoader().getResource("vocab").getPath());
         return segment.run(question);
     }
 

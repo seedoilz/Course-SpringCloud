@@ -1,11 +1,11 @@
-package com.example.client.service;
+package com.segment.client.service;
 
-import com.example.client.nlp.segment.nature.Nature;
+import com.segment.client.nlp.segment.nature.Nature;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
-public interface ExampleService {
+public interface SegmentService {
     String hello();
 
     List<Nature> execSeg(String question) throws FileNotFoundException;

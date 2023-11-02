@@ -1,4 +1,4 @@
-package com.example.client.nlp.segment.nature;
+package com.segment.client.nlp.segment.nature;
 
 public enum NatureEnum {
     /**
