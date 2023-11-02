@@ -16,6 +16,7 @@ public class ExampleController {
     private ExampleService exampleService;
 
 
+    @CrossOrigin(origins =  "*")
     @GetMapping("/query")
     public String query(@RequestParam(value = "question") String question) throws Exception {
         return exampleService.getAnswer(question);
