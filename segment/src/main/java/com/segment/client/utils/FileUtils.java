@@ -4,10 +4,8 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URL;
+import java.util.*;
 
 public class FileUtils {
 
@@ -90,16 +88,31 @@ public class FileUtils {
      * 返回目录下所有文件
      */
     public static List<String> getFiles(String path) {
-        List<String> files = new ArrayList<String>();
-        File file = new File(path);
-        File[] tempList = file.listFiles();
-        if (tempList != null) {
-            for (int i = 0; i < tempList.length; i++) {
-                if (tempList[i].isFile()) {
-                    files.add(tempList[i].toString());
+        List<String> files = new ArrayList<>();
+
+        // 使用类加载器获取资源文件夹的URL
+        ClassLoader classLoader = FileUtils.class.getClassLoader();
+        Enumeration<URL> resources = null;
+        try {
+            resources = classLoader.getResources(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        while (resources.hasMoreElements()) {
+            URL resourceURL = resources.nextElement();
+            File folder = new File(resourceURL.getFile());
+            File[] fileList = folder.listFiles();
+
+            if (fileList != null) {
+                for (File file : fileList) {
+                    if (file.isFile()) {
+                        files.add(file.getName());
+                    }
                 }
             }
         }
+
         return files;
     }
 

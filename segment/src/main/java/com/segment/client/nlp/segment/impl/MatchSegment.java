@@ -4,8 +4,10 @@ import com.segment.client.nlp.segment.Segment;
 import com.segment.client.nlp.segment.nature.Nature;
 import com.segment.client.nlp.segment.nature.NatureEnum;
 import com.segment.client.utils.FileUtils;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,18 +29,39 @@ public class MatchSegment implements Segment {
     private int maxLen;
 
     public MatchSegment(String vocabPath) {
+
         List<String> paths = FileUtils.getFiles(vocabPath);
         words = new ArrayList<>();
         wordToNature = new HashMap<>();
-        for (String path : paths) {
-            String name = FileUtils.getFileName(path);
-            NatureEnum natureEnum = NatureEnum.parser(name);
-            List<String> localWords = FileUtils.readLines(path);
-            for(String word: localWords){
-                words.add(word);
-                wordToNature.put(word, natureEnum);
+        String[] array = {"优势劣势", "使用场景", "实体", "情绪"};
+        ArrayList<String> fileNames = new ArrayList<>(Arrays.asList(array));
+        try {
+            for (String fileName : fileNames) {
+                Resource resource = new ClassPathResource("vocab/" + fileName + ".txt");
+                InputStream inputStream = resource.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String word = line.replace("\n", "");
+                    words.add(word);
+                    NatureEnum natureEnum = NatureEnum.parser(fileName);
+                    wordToNature.put(word, natureEnum);
+                }
             }
+        } catch (IOException e) {
+            // 处理异常
+            e.printStackTrace();
         }
+//        for (String path : paths) {
+//            String name = FileUtils.getFileName(path);
+//            NatureEnum natureEnum = NatureEnum.parser(name);
+//            List<String> localWords = FileUtils.readLines(path);
+//            for(String word: localWords){
+//                words.add(word);
+//                wordToNature.put(word, natureEnum);
+//            }
+//        }
         OptionalInt optionalInt = words.stream().mapToInt(String::length).reduce(Integer::max);
         if (optionalInt.isPresent()) {
             this.maxLen = optionalInt.getAsInt();
@@ -101,7 +124,9 @@ public class MatchSegment implements Segment {
                     wordList.add(subString);
                     break;
                 } else {
-                    subString = subString.substring(0, subString.length() - 1);
+                    if (subString.length() - 1 >= 0){
+                        subString = subString.substring(0, subString.length() - 1);
+                    }
                 }
             }
             start += subString.length();
@@ -117,6 +142,7 @@ public class MatchSegment implements Segment {
     private List<String> segment(String text) {
         List<String> forwardWords = this.segmentForwardLongest(text);
         List<String> backwardWords = this.segmentBackwardLongest(text);
+//        System.out.println(System.getProperty("user.dir"));
 
         if (forwardWords.size() != backwardWords.size()) {
             return forwardWords.size() > backwardWords.size() ? forwardWords : backwardWords;

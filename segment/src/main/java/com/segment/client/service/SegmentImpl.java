@@ -5,6 +5,7 @@ import com.segment.client.nlp.segment.impl.MatchSegment;
 import com.segment.client.nlp.segment.nature.Nature;
 import com.segment.client.nlp.segment.nature.NatureEnum;
 import com.google.common.collect.Lists;
+import com.segment.client.utils.FileUtils;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
@@ -42,13 +43,15 @@ public class SegmentImpl implements SegmentService {
 
     @Override
     public List<Nature> execSeg(String question) throws FileNotFoundException {
-
-        Segment segment = new MatchSegment(SegmentImpl.class.getClassLoader().getResource("vocab").getPath());
+        String vocabPath = SegmentImpl.class.getClassLoader().getResource("vocab").getPath();
+        System.out.println(vocabPath);
+        Segment segment = new MatchSegment(vocabPath);
         return segment.run(question);
     }
 
     public String getAnswer(String question) throws FileNotFoundException {
         System.out.println(question);
+//        System.out.println(System.getProperty("user.dir"));
         List<Nature> segs =  execSeg(question);
 
         // find entity
