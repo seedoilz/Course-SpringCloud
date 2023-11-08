@@ -1,0 +1,10 @@
+version: '3'
+services:
+  server:
+    image: server:0.0.1-SNAPSHOT
+    ports:
+      - "8071:8071"
+  client:
+    image: client-image
+    ports:
+      - "8070:8070"
