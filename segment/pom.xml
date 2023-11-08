@@ -118,7 +118,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <repository>config-server/${project.artifactId}</repository>
+                    <repository>${project.artifactId}</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
                         <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
