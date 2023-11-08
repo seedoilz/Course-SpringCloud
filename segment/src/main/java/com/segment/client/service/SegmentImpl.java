@@ -36,7 +36,7 @@ public class SegmentImpl implements SegmentService {
     }
 
     @Override
-    public String hello(){
+    public String hello() {
         System.out.println("hello");
         return "hello";
     }
@@ -52,37 +52,37 @@ public class SegmentImpl implements SegmentService {
     public String getAnswer(String question) throws FileNotFoundException {
         System.out.println(question);
 //        System.out.println(System.getProperty("user.dir"));
-        List<Nature> segs =  execSeg(question);
+        List<Nature> segs = execSeg(question);
 
         // find entity
         Nature entity = null;
-        for(Nature nature : segs){
-            if(nature.getNatureEnum().equals(NatureEnum.Entity)){
+        for (Nature nature : segs) {
+            if (nature.getNatureEnum().equals(NatureEnum.Entity)) {
                 entity = nature;
                 break;
             }
         }
 
-        if(entity == null){
+        if (entity == null) {
             return null;
         }
 
         String entityWord = entity.getWord();
         List<Map<String, List<String>>> ret = new ArrayList<>();
-        for(Nature nature : segs){
-            if(nature.getNatureEnum().equals(NatureEnum.Entity)){
+        for (Nature nature : segs) {
+            if (nature.getNatureEnum().equals(NatureEnum.Entity)) {
                 continue;
             }
             List<String> list = map.get(nature.getNatureEnum());
-            if(list == null){
+            if (list == null) {
                 continue;
             }
-            for(String quesWord : list){
+            for (String quesWord : list) {
                 Map<String, List<String>> map = new HashMap<>();
                 ArrayList<String> ans = new ArrayList<>();
                 map.put(quesWord, ans);
                 try (Session session = driver.session()) {
-                    Result result = session.run(String.format(sql, entityWord,  quesWord));
+                    Result result = session.run(String.format(sql, entityWord, quesWord));
                     while (result.hasNext()) {
                         Record record = result.next();
                         ans.add(record.get("n2.name").asString());
