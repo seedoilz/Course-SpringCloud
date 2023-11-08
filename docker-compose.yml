@@ -8,3 +8,5 @@ services:
     image: client-image
     ports:
       - "8070:8070"
+    depends_on:
+      - server
