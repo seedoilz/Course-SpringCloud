@@ -11,4 +11,6 @@ public interface SegmentService {
     List<Nature> execSeg(String question) throws FileNotFoundException;
 
     String getAnswer(String question) throws FileNotFoundException;
+
+    String showEntity(String entityName);
 }

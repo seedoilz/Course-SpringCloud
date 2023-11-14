@@ -19,6 +19,13 @@ public class SegmentController {
         return segmentService.getAnswer(question);
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/queryEntity")
+    public String queryEntity(@RequestParam(value = "entityName") String entityName) {
+        return segmentService.showEntity(entityName);
+    }
+
+
     @GetMapping("/")
     public String hello() {
         return segmentService.hello();

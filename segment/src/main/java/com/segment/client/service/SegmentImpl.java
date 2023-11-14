@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class SegmentImpl implements SegmentService {
@@ -109,6 +106,31 @@ public class SegmentImpl implements SegmentService {
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public String showEntity(String entityName) {
+        if (entityName == null)
+            return null;
+        List<Map<String, List<String>>> ret = new ArrayList<>();
+        Map<String, List<String>> entityMap = new HashMap<>();
+        entityMap.put("Entity", List.of(entityName));
+        ret.add(entityMap);
+        List<String> quesWords = new ArrayList<>(Arrays.asList("Sentiment", "Use", "Disadvantage", "Advantage"));
+        for (String quesWord : quesWords) {
+            Map<String, List<String>> map = new HashMap<>();
+            ArrayList<String> ans = new ArrayList<>();
+            map.put(quesWord, ans);
+            try (Session session = driver.session()) {
+                Result result = session.run(String.format(sql, entityName,  quesWord));
+                while (result.hasNext()) {
+                    Record record = result.next();
+                    ans.add(record.get("n2.name").asString());
+                }
+            }
+            ret.add(map);
+        }
+        return ret.toString();
     }
 
 }
