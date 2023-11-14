@@ -92,8 +92,23 @@ public class SegmentImpl implements SegmentService {
             }
         }
 
+        Map<String, String> wordMap = new HashMap<>();
+        wordMap.put("Disadvantage","劣势");
+        wordMap.put("Advantage","优势");
+        wordMap.put("Sentiment","情绪");
+        wordMap.put("Use","使用场景");
+        StringBuilder sb = new StringBuilder();
+        for (Map<String, List<String>> listMap : ret) {
+            for (String s : listMap.keySet()) {
+                if(listMap.get(s).size() == 0){
+                    continue;
+                }
+                sb.append(entityWord).append(wordMap.get(s)).append(": ").append(listMap.get(s).toString());
+            }
+            sb.append("\n");
+        }
 
-        return ret.toString();
+        return sb.toString();
     }
 
 }
