@@ -13,4 +13,6 @@ public interface SegmentService {
     String getAnswer(String question) throws FileNotFoundException;
 
     String showEntity(String entityName);
+
+    String randomEntities();
 }

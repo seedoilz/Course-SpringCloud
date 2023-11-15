@@ -21,6 +21,8 @@ public class SegmentImpl implements SegmentService {
 
     public static String sql = "MATCH (n1:Entity{name:'%s'}) <- [:下属于] - (n2:%s) RETURN n2.name";
 
+    public static String getEntities = "MATCH (a)-[:下属于]->(t) WHERE t.name <> '' RETURN t.name, rand() as r ORDER BY r LIMIT 25";
+
     @Autowired
     private Driver driver;
 
@@ -110,13 +112,14 @@ public class SegmentImpl implements SegmentService {
 
     @Override
     public String showEntity(String entityName) {
-        if (entityName == null)
+        if (entityName == null || entityName.length() == 0)
             return null;
         List<Map<String, List<String>>> ret = new ArrayList<>();
         Map<String, List<String>> entityMap = new HashMap<>();
         entityMap.put("Entity", List.of(entityName));
         ret.add(entityMap);
         List<String> quesWords = new ArrayList<>(Arrays.asList("Sentiment", "Use", "Disadvantage", "Advantage"));
+        boolean getFound = false;
         for (String quesWord : quesWords) {
             Map<String, List<String>> map = new HashMap<>();
             ArrayList<String> ans = new ArrayList<>();
@@ -126,11 +129,32 @@ public class SegmentImpl implements SegmentService {
                 while (result.hasNext()) {
                     Record record = result.next();
                     ans.add(record.get("n2.name").asString());
+                    getFound = true;
                 }
             }
             ret.add(map);
         }
-        return ret.toString();
+        if (getFound)
+            return ret.toString();
+        else
+            return null;
+    }
+
+    @Override
+    public String randomEntities() {
+        ArrayList<String> entityNames = new ArrayList<>();
+        try (Session session = driver.session()) {
+            Result result = session.run(getEntities);
+            while (result.hasNext()) {
+                Record record = result.next();
+                entityNames.add(record.get("t.name").asString());
+            }
+        }
+        ArrayList<String> ans = new ArrayList<>();
+        for (String entityName : entityNames) {
+            ans.add(showEntity(entityName));
+        }
+        return ans.toString();
     }
 
 }

@@ -25,6 +25,12 @@ public class SegmentController {
         return segmentService.showEntity(entityName);
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/random")
+    public String randomShow() {
+        return segmentService.randomEntities();
+    }
+
 
     @GetMapping("/")
     public String hello() {
