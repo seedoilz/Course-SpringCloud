@@ -114,30 +114,37 @@ public class SegmentImpl implements SegmentService {
     public String showEntity(String entityName) {
         if (entityName == null || entityName.length() == 0)
             return null;
-        List<Map<String, List<String>>> ret = new ArrayList<>();
-        Map<String, List<String>> entityMap = new HashMap<>();
-        entityMap.put("Entity", List.of(entityName));
-        ret.add(entityMap);
+        StringBuilder ret = new StringBuilder();
+        ret.append("{\"Entity\":\"").append(entityName).append('"');
         List<String> quesWords = new ArrayList<>(Arrays.asList("Sentiment", "Use", "Disadvantage", "Advantage"));
-        boolean getFound = false;
         for (String quesWord : quesWords) {
-            Map<String, List<String>> map = new HashMap<>();
-            ArrayList<String> ans = new ArrayList<>();
-            map.put(quesWord, ans);
+            ret.append(", \"").append(quesWord).append("\":");
             try (Session session = driver.session()) {
-                Result result = session.run(String.format(sql, entityName,  quesWord));
+                Result result = session.run(String.format(sql, entityName, quesWord));
+                int numOfRes = 0;
+                List<String> ans = new ArrayList<>();
                 while (result.hasNext()) {
                     Record record = result.next();
                     ans.add(record.get("n2.name").asString());
-                    getFound = true;
+                    numOfRes++;
+                }
+                if (numOfRes == 0)
+                    ret.append("\"\"");
+                else if (numOfRes == 1) {
+                    ret.append('"').append(ans.get(0)).append('"');
+                } else {
+                    for (int i = 0; i < numOfRes; i++) {
+                        if (i == 0)
+                            ret.append("[\"").append(ans.get(i)).append('"');
+                        else
+                            ret.append(",\"").append(ans.get(i)).append('"');
+                    }
+                    ret.append(']');
                 }
             }
-            ret.add(map);
         }
-        if (getFound)
-            return ret.toString();
-        else
-            return null;
+        ret.append('}');
+        return ret.toString();
     }
 
     @Override

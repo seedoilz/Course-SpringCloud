@@ -22,7 +22,8 @@ public class SegmentController {
     @CrossOrigin(origins = "*")
     @GetMapping("/queryEntity")
     public String queryEntity(@RequestParam(value = "entityName") String entityName) {
-        return segmentService.showEntity(entityName);
+        String res = segmentService.showEntity(entityName);
+        return '[' + res + ']';
     }
 
     @CrossOrigin(origins = "*")
