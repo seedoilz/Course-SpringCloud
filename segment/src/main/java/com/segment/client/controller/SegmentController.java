@@ -19,14 +19,14 @@ public class SegmentController {
         return segmentService.getAnswer(question);
     }
 
-//    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @GetMapping("/queryEntity")
     public String queryEntity(@RequestParam(value = "entityName") String entityName) {
         String res = segmentService.showEntity(entityName);
         return '[' + res + ']';
     }
 
-//    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @GetMapping("/random")
     public String randomShow() {
         return segmentService.randomEntities();
