@@ -14,15 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class SegmentImpl implements SegmentService {
 
     public static String sql = "MATCH (n1:Entity{name:'%s'}) <- [:下属于] - (n2:%s) RETURN n2.name";
+
+    public static String getEntities = "MATCH (a)-[:下属于]->(t) WHERE t.name <> '' RETURN t.name, rand() as r ORDER BY r LIMIT 25";
 
     @Autowired
     private Driver driver;
@@ -91,7 +90,7 @@ public class SegmentImpl implements SegmentService {
                 ret.add(map);
             }
         }
-        
+
         Map<String, String> wordMap = new HashMap<>();
         wordMap.put("Disadvantage","劣势");
         wordMap.put("Advantage","优势");
@@ -109,6 +108,66 @@ public class SegmentImpl implements SegmentService {
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public String showEntity(String entityName) {
+        if (entityName == null || entityName.length() == 0) {
+            return null;
+        }
+        StringBuilder ret = new StringBuilder();
+        ret.append("{\"Entity\":\"").append(entityName).append('"');
+        List<String> quesWords = new ArrayList<>(Arrays.asList("Sentiment", "Use", "Disadvantage", "Advantage"));
+        for (String quesWord : quesWords) {
+            ret.append(", \"").append(quesWord).append("\":");
+            try (Session session = driver.session()) {
+                Result result = session.run(String.format(sql, entityName, quesWord));
+                int numOfRes = 0;
+                List<String> ans = new ArrayList<>();
+                while (result.hasNext()) {
+                    Record record = result.next();
+                    ans.add(record.get("n2.name").asString());
+                    numOfRes++;
+                }
+                if (numOfRes == 0) {
+                    ret.append('[');
+                    ret.append("\"\"");
+                    ret.append(']');
+                } else if (numOfRes == 1) {
+                    ret.append('[');
+                    ret.append('"').append(ans.get(0)).append('"');
+                    ret.append(']');
+                } else {
+                    for (int i = 0; i < numOfRes; i++) {
+                        if (i == 0) {
+                            ret.append("[\"").append(ans.get(i)).append('"');
+                        } else {
+                            ret.append(",\"").append(ans.get(i)).append('"');
+                        }
+                    }
+                    ret.append(']');
+                }
+            }
+        }
+        ret.append('}');
+        return ret.toString();
+    }
+
+    @Override
+    public String randomEntities() {
+        ArrayList<String> entityNames = new ArrayList<>();
+        try (Session session = driver.session()) {
+            Result result = session.run(getEntities);
+            while (result.hasNext()) {
+                Record record = result.next();
+                entityNames.add(record.get("t.name").asString());
+            }
+        }
+        ArrayList<String> ans = new ArrayList<>();
+        for (String entityName : entityNames) {
+            ans.add(showEntity(entityName));
+        }
+        return ans.toString();
     }
 
 }
