@@ -33,9 +33,9 @@ public class SegmentController {
     }
 
 
-    @GetMapping("/")
-    public String hello() {
-        return segmentService.hello();
-    }
+//    @GetMapping("/")
+//    public String hello() {
+//        return segmentService.hello();
+//    }
 
 }
