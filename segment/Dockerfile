@@ -2,7 +2,7 @@ FROM openjdk:17
 
 WORKDIR /app
 
-COPY target/client-0.0.1-SNAPSHOT-docker-info.jar /app/client.jar
+COPY target/client-0.0.1-SNAPSHOT.jar /app/client.jar
 
 #COPY server/target/server-0.0.1-SNAPSHOT.jar /app/server.jar
 
