@@ -112,8 +112,9 @@ public class SegmentImpl implements SegmentService {
 
     @Override
     public String showEntity(String entityName) {
-        if (entityName == null || entityName.length() == 0)
+        if (entityName == null || entityName.length() == 0) {
             return null;
+        }
         StringBuilder ret = new StringBuilder();
         ret.append("{\"Entity\":\"").append(entityName).append('"');
         List<String> quesWords = new ArrayList<>(Arrays.asList("Sentiment", "Use", "Disadvantage", "Advantage"));
@@ -128,16 +129,21 @@ public class SegmentImpl implements SegmentService {
                     ans.add(record.get("n2.name").asString());
                     numOfRes++;
                 }
-                if (numOfRes == 0)
+                if (numOfRes == 0) {
+                    ret.append('[');
                     ret.append("\"\"");
-                else if (numOfRes == 1) {
+                    ret.append(']');
+                } else if (numOfRes == 1) {
+                    ret.append('[');
                     ret.append('"').append(ans.get(0)).append('"');
+                    ret.append(']');
                 } else {
                     for (int i = 0; i < numOfRes; i++) {
-                        if (i == 0)
+                        if (i == 0) {
                             ret.append("[\"").append(ans.get(i)).append('"');
-                        else
+                        } else {
                             ret.append(",\"").append(ans.get(i)).append('"');
+                        }
                     }
                     ret.append(']');
                 }
